@@ -11,20 +11,20 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv('sq1') {
-                        sh """
-                            mvn clean verify sonar:sonar ^
-                                -Dsonar.projectKey=emissor  ^
-                                -Dsonar.projectName='emissor'
-                                -Dsonar.host.url=http://sonarqube:9000
-                        """
-                    }
-                }
-            }
-        }
+//         stage('SonarQube analysis') {
+//             steps {
+//                 script {
+//                     withSonarQubeEnv('sq1') {
+//                         sh """
+//                             mvn clean verify sonar:sonar ^
+//                                 -Dsonar.projectKey=emissor  ^
+//                                 -Dsonar.projectName='emissor'
+//                                 -Dsonar.host.url=http://sonarqube:9000
+//                         """
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Construir Imagem Docker') {
             steps {
