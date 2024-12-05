@@ -16,7 +16,7 @@ pipeline {
               script {
                   def appName = 'emissor-service'
                   def imageTag = "${appName}:${env.BUILD_ID}"
-                  sh "docker build -t ${imageTag} ."
+                  bat "docker build -t ${imageTag} ."
               }
           }
       }
@@ -27,7 +27,7 @@ pipeline {
                 script {
                     def appName = 'emissor-service'
                     def imageTag = "${appName}:${env.BUILD_ID}"
-                    sh "docker-compose up -d --build"
+                    bat "docker-compose up -d --build"
                 }
             }
         }
