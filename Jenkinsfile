@@ -17,8 +17,9 @@ pipeline {
                     withSonarQubeEnv('sq1') {
                         sh """
                             mvn clean verify sonar:sonar ^
-                                -Dsonar.projectKey=emissor-service  ^
-                                -Dsonar.projectName="emissor-service"
+                                -Dsonar.projectKey=emissor  ^
+                                -Dsonar.projectName='emissor'
+                                -Dsonar.host.url=http://sonarqube:9000
                         """
                     }
                 }
