@@ -6,8 +6,8 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']],
                           userRemoteConfigs: [
                                 [
-                                    url: 'https://github.com/ecalazaes/resumoav2.git',
-                                    credentialsId: 'ecalazaes']]])
+                                    url: 'https://github.com/ecalazaes/emissor-service.git',
+                                    credentialsId: 'emissor-service']]])
             }
         }
 
@@ -17,9 +17,8 @@ pipeline {
                     withSonarQubeEnv('sq1') {
                         bat """
                             mvn clean verify sonar:sonar ^
-                                -Dspring.profiles.active=${SONAR_PROFILE} ^
-                                -Dsonar.projectKey=resumoav2  ^
-                                -Dsonar.projectName="resumoav2 "
+                                -Dsonar.projectKey=emissor-service  ^
+                                -Dsonar.projectName="emissor-service"
                         """
                     }
                 }
@@ -29,9 +28,9 @@ pipeline {
         stage('Construir Imagem Docker') {
             steps {
                 script {
-                    def appName = 'av1'
+                    def appName = 'emissor-service'
                     def imageTag = "${appName}:${env.BUILD_ID}"
-                    bat "docker build --build-arg SPRING_PROFILES_ACTIVE=${DEPLOY_PROFILE} -t ${imageTag} ."
+                    bat "docker build ${imageTag} ."
                 }
             }
         }
@@ -39,7 +38,7 @@ pipeline {
         stage('Fazer Deploy') {
             steps {
                 script {
-                    def appName = 'av1'
+                    def appName = 'emissor-service'
                     def imageTag = "${appName}:${env.BUILD_ID}"
                     bat "docker-compose up -d --build"
                 }
