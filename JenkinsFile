@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    stages {
+        stage('Verificar Repositorio') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                          userRemoteConfigs: [
+                                [
+                                    url: 'https://github.com/ecalazaes/resumoav2.git',
+                                    credentialsId: 'ecalazaes']]])
+            }
+        }
+
+        stage('SonarQube analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('sq1') {
+                        bat """
+                            mvn clean verify sonar:sonar ^
+                                -Dspring.profiles.active=${SONAR_PROFILE} ^
+                                -Dsonar.projectKey=resumoav2  ^
+                                -Dsonar.projectName="resumoav2 "
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Construir Imagem Docker') {
+            steps {
+                script {
+                    def appName = 'av1'
+                    def imageTag = "${appName}:${env.BUILD_ID}"
+                    bat "docker build --build-arg SPRING_PROFILES_ACTIVE=${DEPLOY_PROFILE} -t ${imageTag} ."
+                }
+            }
+        }
+
+        stage('Fazer Deploy') {
+            steps {
+                script {
+                    def appName = 'av1'
+                    def imageTag = "${appName}:${env.BUILD_ID}"
+                    bat "docker-compose up -d --build"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deploy realizado com sucesso!'
+        }
+        failure {
+            echo 'Houve um erro durante o deploy.'
+        }
+    }
+}
