@@ -14,7 +14,7 @@ pipeline {
          stage('SonarQube analysis') {
                     steps {
                         script {
-                            withSonarQubeEnv('sq1') {
+                            withSonarQubeEnv('sq-emissor') {
                                 bat """
                                     mvn clean verify sonar:sonar ^
                                         -Dsonar.projectKey=emissor-service  ^
