@@ -11,6 +11,21 @@ pipeline {
             }
         }
 
+         stage('SonarQube analysis') {
+                    steps {
+                        script {
+                            withSonarQubeEnv('sq1') {
+                                bat """
+                                    mvn clean verify sonar:sonar ^
+                                        -Dsonar.projectKey=emissor-service  ^
+                                        -Dsonar.projectName="emissor-service "
+                                """
+                            }
+                        }
+                    }
+                }
+
+
       stage('Construir Imagem Docker') {
           steps {
               script {
