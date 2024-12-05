@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sq1') {
-                        bat """
+                        sh """
                             mvn clean verify sonar:sonar ^
                                 -Dsonar.projectKey=emissor-service  ^
                                 -Dsonar.projectName="emissor-service"
@@ -30,7 +30,7 @@ pipeline {
                 script {
                     def appName = 'emissor-service'
                     def imageTag = "${appName}:${env.BUILD_ID}"
-                    bat "docker build ${imageTag} ."
+                    sh "docker build ${imageTag} ."
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
                 script {
                     def appName = 'emissor-service'
                     def imageTag = "${appName}:${env.BUILD_ID}"
-                    bat "docker-compose up -d --build"
+                    sh "docker-compose up -d --build"
                 }
             }
         }
